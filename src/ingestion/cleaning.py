@@ -57,11 +57,10 @@ def build_clean_dataframe(records: list[PaperRecord], run_date: datetime) -> pd.
     )
 
     # 3. Log/count lý do filter hoặc dedupe
-    print("\n--- BÁO CÁO KẾT QUẢ DATA CLEANING ---")
-    print(f"Tổng số bản ghi ban đầu: {initial_count}")
-    print(f"Bị loại bỏ do thiếu title/summary: {missing_fields_count}")
-    print(f"Bị loại bỏ do trùng lặp (duplicate): {dedupe_count}")
-    print(f"Tổng số bản ghi còn lại (Cleaned): {len(df)}")
-    print("--------------------------------------\n")
+    logger.info("--- BÁO CÁO KẾT QUẢ DATA CLEANING ---")
+    logger.info("Tổng số bản ghi ban đầu: %s", initial_count)
+    logger.info("Bị loại bỏ do thiếu title/summary: %s", missing_fields_count)
+    logger.info("Bị loại bỏ do trùng lặp (duplicate): %s", dedupe_count)
+    logger.info("Tổng số bản ghi còn lại (Cleaned): %s", len(df))
 
     return df.reset_index(drop=True)
