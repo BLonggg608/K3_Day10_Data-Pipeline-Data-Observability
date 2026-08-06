@@ -10,14 +10,14 @@ def _metric(value: Any) -> str:
 
 
 CHECK_LABELS = {
-    "row_count": "Row count",
+    "row_count": "Số lượng row",
     "paper_id_not_blank": "paper_id không rỗng",
     "paper_id_unique": "paper_id duy nhất",
     "title_not_blank": "title không rỗng",
     "summary_not_blank": "summary không rỗng",
     "embedding_text_not_blank": "embedding text không rỗng",
     "age_days_valid": "age_days hợp lệ",
-    "records_within_freshness_threshold": "Records nằm trong freshness threshold",
+    "records_within_freshness_threshold": "Record nằm trong freshness threshold",
 }
 
 DIMENSION_LABELS = {
@@ -128,11 +128,11 @@ def _quality_section(title: str, quality: dict[str, Any]) -> str:
     ) or "| Không có check | N/A | FAIL | N/A |"
     return f"""### {title}
 
-- Overall status: **{'PASS' if quality.get('success') else 'FAIL'}**
-- Passed checks: {quality.get('passed_checks', 0)}
-- Failed checks: {quality.get('failed_checks', 0)}
+- Trạng thái tổng thể: **{'PASS' if quality.get('success') else 'FAIL'}**
+- Số check đạt: {quality.get('passed_checks', 0)}
+- Số check không đạt: {quality.get('failed_checks', 0)}
 
-| Check | Dimension | Status | Observed |
+| Check | Dimension | Trạng thái | Giá trị quan sát |
 | --- | --- | --- | ---: |
 {check_rows}
 """
@@ -141,14 +141,14 @@ def _quality_section(title: str, quality: dict[str, Any]) -> str:
 def _freshness_section(title: str, freshness: dict[str, Any]) -> str:
     return f"""### {title}
 
-| Field | Value |
+| Field | Giá trị |
 | --- | --- |
-| Latest published | {freshness.get('latest_published', 'N/A')} |
-| Oldest published | {freshness.get('oldest_published', 'N/A')} |
-| Freshness threshold (days) | {freshness.get('freshness_threshold_days', 'N/A')} |
-| Stale rows | {freshness.get('stale_rows', 'N/A')} |
-| Invalid date rows | {freshness.get('invalid_date_rows', 'N/A')} |
-| Status | {'FRESH' if freshness.get('is_fresh') else 'STALE/INVALID'} |
+| Ngày published mới nhất | {freshness.get('latest_published', 'N/A')} |
+| Ngày published cũ nhất | {freshness.get('oldest_published', 'N/A')} |
+| Freshness threshold (ngày) | {freshness.get('freshness_threshold_days', 'N/A')} |
+| Số row stale | {freshness.get('stale_rows', 'N/A')} |
+| Số row có date không hợp lệ | {freshness.get('invalid_date_rows', 'N/A')} |
+| Trạng thái | {'FRESH' if freshness.get('is_fresh') else 'STALE/INVALID'} |
 """
 
 
@@ -174,7 +174,7 @@ def generate_corruption_report(
         f"{_delta(repaired_metrics.get(name), baseline_metrics.get(name))} |"
         for name in metric_names
     )
-    text = f"""# Báo cáo so sánh Corruption: Baseline → Corrupted → Repaired
+    text = f"""# Báo cáo so sánh corruption: Baseline → Corrupted → Repaired
 
 ## Retrieval và answer metrics
 
@@ -182,8 +182,8 @@ def generate_corruption_report(
 | --- | ---: | ---: | ---: | ---: | ---: |
 {metric_rows}
 
-- Corrupted samples: {corrupted_metrics.get('samples', 'N/A')}
-- Repaired samples: {repaired_metrics.get('samples', 'N/A')}
+- Số sample corrupted: {corrupted_metrics.get('samples', 'N/A')}
+- Số sample repaired: {repaired_metrics.get('samples', 'N/A')}
 
 ## Data quality
 
@@ -197,7 +197,7 @@ def generate_corruption_report(
 {_freshness_section("Corrupted", corrupted_freshness)}
 {_freshness_section("Repaired", repaired_freshness)}
 
-## Evidence boundary
+## Phạm vi của bằng chứng
 
 Báo cáo này được tạo hoàn toàn từ metrics, quality checks và freshness report thật của ba trạng thái baseline/corrupted/repaired; không có số liệu nào bị chỉnh sửa thủ công. Nếu repaired chưa khôi phục hoàn toàn về mức baseline, delta ở trên sẽ vẫn khác 0 và cần được nêu rõ khi demo thay vì tô hồng kết quả.
 """

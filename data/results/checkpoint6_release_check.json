@@ -190,7 +190,7 @@
     }
   ],
   "warnings": [
-    "phase1_report.md changed after CP4 lock because the report was localized and its lineage paths were made portable; locked metrics/answers/quality/freshness remain unchanged."
+    "phase1_report.md thay đổi sau khi baseline được khóa ở CP4 vì report đã được Việt hóa và các lineage path đã được chuyển thành path portable; metrics, answers, quality và freshness đã khóa vẫn không thay đổi."
   ],
   "artifact_sha256": {
     "data/raw/crossref_response.json": "D23EDA296B9EBB9FABF522910C62D0BE4E193137C897568E3905F0AF84987690",
@@ -216,7 +216,7 @@
     "data/quality/freshness_report_repaired.json": "3010626284CC2F3B5E6298410DC97AAAE56901EE648A0DC286B13DDBC48FD175",
     "data/results/corruption_log.json": "5093FC926CBD00A7AF4608664238F4D8993C5840BE0C98A444829729EDC1C8FD",
     "data/results/checkpoint4_baseline_lock.json": "93574209B14CC5BC754D79983F9A6C17F65144B50F383864C39CD27A31C02D20",
-    "data/reports/phase1_report.md": "DCCA58FA5EFC0C1EF0FB3125F218746A118C48C04436654E3D4C26AD45EB7C80",
-    "data/reports/corruption_report.md": "FCFDCC10C967ABEDA68B34732100917323A495A9E7229D896CD230889AB05BFC"
+    "data/reports/phase1_report.md": "39A02C99BF4CBF3EAC4B06500F99BBEC51B0BA987D5954C41374A3B9515F81F8",
+    "data/reports/corruption_report.md": "F001469570F2F9F464D800117E666DFCD1A3054020523E00725213E22C1E9461"
   }
 }
