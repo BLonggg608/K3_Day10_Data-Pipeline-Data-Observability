@@ -108,6 +108,8 @@ def evaluate_pipeline(
     answers_output_path,
 ) -> EvaluationBundle:
     test_set = read_json(test_set_path)
+    if not isinstance(test_set, list) or not test_set:
+        raise ValueError("Evaluation test set must be a non-empty JSON list.")
     answers: list[dict[str, Any]] = []
 
     for item in test_set:
@@ -137,6 +139,14 @@ def evaluate_pipeline(
         "judge_accuracy": mean(1.0 if item["judge"]["correct"] else 0.0 for item in answers),
         "mean_judge_score": mean(item["judge"]["score"] for item in answers),
     }
+    fallback_judge_samples = sum(
+        1
+        for item in answers
+        if item["judge"]["reasoning"].startswith("Fallback heuristic judge used")
+    )
+    summary["llm_judge_samples"] = len(answers) - fallback_judge_samples
+    summary["fallback_judge_samples"] = fallback_judge_samples
+    summary["judge_mode"] = "llm" if fallback_judge_samples == 0 else "fallback" if fallback_judge_samples == len(answers) else "mixed"
     summary["ragas"] = _run_ragas(settings, answers)
 
     bundle = EvaluationBundle(summary=summary, answers=answers)

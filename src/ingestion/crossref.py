@@ -78,14 +78,7 @@ def _extract_pdf_url(links: list[dict]) -> str:
 
 
 def parse_crossref_payload(payload: dict) -> list[PaperRecord]:
-    """TODO(student): parse Crossref payload thanh list PaperRecord.
-
-    Pseudo-code:
-    1. Duyet `payload["message"]["items"]`.
-    2. Lay DOI, title, abstract, authors, subject, dates, URLs.
-    3. Chuan hoa text va bo record khong hop le.
-    4. Tra ve list `PaperRecord`.
-    """
+    """Parse a Crossref response into stable, normalized paper records."""
     items = (payload.get("message") or {}).get("items") or []
     records: list[PaperRecord] = []
 
@@ -153,15 +146,7 @@ def _request_with_retry(params: dict) -> dict:
 
 
 def fetch_source_records(settings: Settings) -> list[PaperRecord]:
-    """TODO(student): goi source API, luu raw response, parse thanh records.
-
-    Pseudo-code:
-    1. Tao params tu `settings.source_query`, `settings.source_filter`, `settings.max_results`.
-    2. Goi API voi retry cho cac status code nhu 429/503.
-    3. Luu raw response vao `settings.paths.raw_api_response`.
-    4. Parse payload bang `parse_crossref_payload`.
-    5. Luu records vao `settings.paths.raw_records_json`.
-    """
+    """Fetch Crossref data with retry and persist response and record artifacts."""
     params = {
         "query": settings.source_query,
         "filter": settings.source_filter,
@@ -187,6 +172,6 @@ def fetch_source_records(settings: Settings) -> list[PaperRecord]:
 
 
 def load_raw_records(path: Path) -> list[PaperRecord]:
-    """TODO(student): doc JSON snapshot va map thanh `PaperRecord`."""
+    """Load a persisted raw-record snapshot."""
     data = json.loads(path.read_text(encoding="utf-8"))
     return [PaperRecord(**item) for item in data]

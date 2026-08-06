@@ -1,0 +1,65 @@
+{
+  "report_name": "baseline",
+  "total_rows": 24,
+  "passed_checks": 8,
+  "failed_checks": 0,
+  "success": true,
+  "checks": [
+    {
+      "name": "row_count",
+      "dimension": "completeness",
+      "success": true,
+      "observed": 24,
+      "expectation": "> 0"
+    },
+    {
+      "name": "paper_id_not_blank",
+      "dimension": "completeness",
+      "success": true,
+      "observed": 0,
+      "expectation": "0 blank"
+    },
+    {
+      "name": "paper_id_unique",
+      "dimension": "uniqueness",
+      "success": true,
+      "observed": 0,
+      "expectation": "0 duplicates"
+    },
+    {
+      "name": "title_not_blank",
+      "dimension": "completeness",
+      "success": true,
+      "observed": 0,
+      "expectation": "0 blank"
+    },
+    {
+      "name": "summary_not_blank",
+      "dimension": "completeness",
+      "success": true,
+      "observed": 0,
+      "expectation": "0 blank"
+    },
+    {
+      "name": "embedding_text_not_blank",
+      "dimension": "completeness",
+      "success": true,
+      "observed": 0,
+      "expectation": "0 blank"
+    },
+    {
+      "name": "age_days_valid",
+      "dimension": "validity",
+      "success": true,
+      "observed": 0,
+      "expectation": "0 invalid"
+    },
+    {
+      "name": "records_within_freshness_threshold",
+      "dimension": "freshness",
+      "success": true,
+      "observed": 0,
+      "expectation": "0 records older than 180 days"
+    }
+  ]
+}
