@@ -22,6 +22,14 @@ def _load_or_fetch_records(settings: Settings):
     return fetch_source_records(settings), "Crossref API"
 
 
+def _artifact_path(settings: Settings, path) -> str:
+    """Render portable artifact paths in generated reports."""
+    try:
+        return path.resolve().relative_to(settings.paths.project_dir).as_posix()
+    except ValueError:
+        return str(path)
+
+
 def run_phase1(settings: Settings | None = None) -> dict[str, Any]:
     """Run the reproducible baseline pipeline and return its artifact summary."""
     settings = settings or load_settings()
@@ -65,8 +73,8 @@ def run_phase1(settings: Settings | None = None) -> dict[str, Any]:
         "requested_records": settings.max_results,
         "raw_records": len(records),
         "clean_records": len(clean_df),
-        "raw_api_response": str(settings.paths.raw_api_response),
-        "raw_records_json": str(settings.paths.raw_records_json),
+        "raw_api_response": _artifact_path(settings, settings.paths.raw_api_response),
+        "raw_records_json": _artifact_path(settings, settings.paths.raw_records_json),
     }
     generate_phase1_report(
         settings.paths.baseline_report,

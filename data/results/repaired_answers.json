@@ -25,11 +25,7 @@
     "judge": {
       "score": 5,
       "correct": true,
-<<<<<<< HEAD
       "reasoning": "The model answer is identical to the reference answer, accurately summarizing the key points about the challenges in diagnosing jawbone lesions in oral and maxillofacial radiology."
-=======
-      "reasoning": "The model answer is identical to the reference answer, accurately summarizing the key points about the challenges in diagnosing jawbone lesions."
->>>>>>> f8a4485a5c4564f755509f6484be16584aa4ab99
     }
   },
   {
@@ -58,11 +54,7 @@
     "judge": {
       "score": 5,
       "correct": true,
-<<<<<<< HEAD
       "reasoning": "The model answer matches the reference answer exactly, providing all the authors' names in the correct order."
-=======
-      "reasoning": "The model answer matches the reference answer exactly, providing all the authors' names correctly."
->>>>>>> f8a4485a5c4564f755509f6484be16584aa4ab99
     }
   },
   {
@@ -149,11 +141,7 @@
     "judge": {
       "score": 5,
       "correct": true,
-<<<<<<< HEAD
       "reasoning": "The model answer is identical to the reference answer, accurately summarizing the key points about the limitations of generic Large Language Models in high-stakes contexts."
-=======
-      "reasoning": "The model answer is identical to the reference answer, accurately summarizing the key points about the limitations of generic Large Language Models in high-stakes contexts like sleep medicine."
->>>>>>> f8a4485a5c4564f755509f6484be16584aa4ab99
     }
   },
   {
@@ -356,11 +344,7 @@
     "judge": {
       "score": 5,
       "correct": true,
-<<<<<<< HEAD
       "reasoning": "Both the model answer and the reference answer provide the same response of 'Unknown', indicating that neither has information on the categories of the paper. Therefore, the model answer is considered materially correct."
-=======
-      "reasoning": "Both the model answer and the reference answer provide the same response of 'Unknown', indicating that neither has information on the categories of the paper. Therefore, the answers are consistent and correct."
->>>>>>> f8a4485a5c4564f755509f6484be16584aa4ab99
     }
   },
   {
@@ -476,11 +460,7 @@
     "judge": {
       "score": 5,
       "correct": true,
-<<<<<<< HEAD
       "reasoning": "Both the model answer and the reference answer provide the same response of 'Unknown', indicating that neither has information on the categories of the paper. Therefore, the model answer is materially correct."
-=======
-      "reasoning": "Both the model answer and the reference answer provide the same response, which is 'Unknown'. Therefore, the model answer is materially correct."
->>>>>>> f8a4485a5c4564f755509f6484be16584aa4ab99
     }
   },
   {

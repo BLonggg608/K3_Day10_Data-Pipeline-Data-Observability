@@ -14,6 +14,23 @@
 
 ## Data quality
 
+### Baseline
+
+- Overall status: **PASS**
+- Passed checks: 8
+- Failed checks: 0
+
+| Check | Dimension | Status | Observed |
+| --- | --- | --- | ---: |
+| Row count | Completeness | PASS | 24 |
+| paper_id không rỗng | Completeness | PASS | 0 |
+| paper_id duy nhất | Uniqueness | PASS | 0 |
+| title không rỗng | Completeness | PASS | 0 |
+| summary không rỗng | Completeness | PASS | 0 |
+| embedding text không rỗng | Completeness | PASS | 0 |
+| age_days hợp lệ | Validity | PASS | 0 |
+| Records nằm trong freshness threshold | Freshness | PASS | 0 |
+
 ### Corrupted
 
 - Overall status: **FAIL**
@@ -50,6 +67,17 @@
 
 
 ## Freshness
+
+### Baseline
+
+| Field | Value |
+| --- | --- |
+| Latest published | 2026-08-01 |
+| Oldest published | 2026-02-12 |
+| Freshness threshold (days) | 180 |
+| Stale rows | 0 |
+| Invalid date rows | 0 |
+| Status | FRESH |
 
 ### Corrupted
 

@@ -1,0 +1,222 @@
+{
+  "checkpoint": 6,
+  "status": "ready_for_release",
+  "checks_passed": 22,
+  "checks_total": 22,
+  "checks": [
+    {
+      "name": "raw_snapshot_available",
+      "success": true,
+      "details": {
+        "records": 24
+      }
+    },
+    {
+      "name": "repair_matches_baseline_clean",
+      "success": true,
+      "details": {
+        "baseline_rows": 24,
+        "repaired_rows": 24
+      }
+    },
+    {
+      "name": "corruption_changes_clean_data",
+      "success": true,
+      "details": {
+        "baseline_rows": 24,
+        "corrupted_rows": 24
+      }
+    },
+    {
+      "name": "test_set_hash_locked",
+      "success": true,
+      "details": {
+        "expected": "90D8ED972B2DBBB84C35E22FB8E0DFE9B775839433A05065B2242C7836083139",
+        "actual": "90D8ED972B2DBBB84C35E22FB8E0DFE9B775839433A05065B2242C7836083139"
+      }
+    },
+    {
+      "name": "baseline_evaluation_contract",
+      "success": true,
+      "details": {
+        "answers": 24,
+        "samples": 24
+      }
+    },
+    {
+      "name": "corrupted_evaluation_contract",
+      "success": true,
+      "details": {
+        "answers": 24,
+        "samples": 24
+      }
+    },
+    {
+      "name": "repaired_evaluation_contract",
+      "success": true,
+      "details": {
+        "answers": 24,
+        "samples": 24
+      }
+    },
+    {
+      "name": "repaired_same_query_smoke",
+      "success": true,
+      "details": {
+        "question_id": "q-01-authors",
+        "answer_recovered": true,
+        "retrieval_recovered": true
+      }
+    },
+    {
+      "name": "corruption_degrades_agent_metric",
+      "success": true,
+      "details": {
+        "retrieval_hit_rate": 0.0,
+        "mean_token_f1": -0.15860215053763438,
+        "judge_accuracy": -0.16666666666666674,
+        "mean_judge_score": -0.583333333333333
+      }
+    },
+    {
+      "name": "repair_recovers_agent_metrics",
+      "success": true,
+      "details": {
+        "retrieval_hit_rate": 0.0,
+        "mean_token_f1": 0.0,
+        "judge_accuracy": 0.0,
+        "mean_judge_score": 0.0
+      }
+    },
+    {
+      "name": "evaluator_no_fallback",
+      "success": true,
+      "details": {
+        "baseline": "llm",
+        "corrupted": "llm",
+        "repaired": "llm"
+      }
+    },
+    {
+      "name": "quality_transition",
+      "success": true,
+      "details": {
+        "baseline": true,
+        "corrupted": false,
+        "repaired": true
+      }
+    },
+    {
+      "name": "freshness_transition",
+      "success": true,
+      "details": {
+        "baseline": true,
+        "corrupted": false,
+        "repaired": true
+      }
+    },
+    {
+      "name": "baseline_collection",
+      "success": true,
+      "details": {
+        "name": "papers-baseline",
+        "chroma_documents": 24,
+        "manifest_documents": 24,
+        "persist_path": "data/chroma"
+      }
+    },
+    {
+      "name": "corrupted_collection",
+      "success": true,
+      "details": {
+        "name": "papers-corrupted",
+        "chroma_documents": 24,
+        "manifest_documents": 24,
+        "persist_path": "data/chroma"
+      }
+    },
+    {
+      "name": "repaired_collection",
+      "success": true,
+      "details": {
+        "name": "papers-repaired",
+        "chroma_documents": 24,
+        "manifest_documents": 24,
+        "persist_path": "data/chroma"
+      }
+    },
+    {
+      "name": "corruption_log_traceable",
+      "success": true,
+      "details": {
+        "entries": 6
+      }
+    },
+    {
+      "name": "repair_restores_affected_records",
+      "success": true,
+      "details": {
+        "affected_records": 6,
+        "restored_records": 6
+      }
+    },
+    {
+      "name": "env_not_tracked",
+      "success": true,
+      "details": {
+        "tracked": false
+      }
+    },
+    {
+      "name": "no_tracked_secret_pattern",
+      "success": true,
+      "details": {
+        "locations": []
+      }
+    },
+    {
+      "name": "no_student_todo_or_merge_marker",
+      "success": true,
+      "details": {
+        "locations": []
+      }
+    },
+    {
+      "name": "portable_report_paths",
+      "success": true,
+      "details": {
+        "report": "data/reports/phase1_report.md"
+      }
+    }
+  ],
+  "warnings": [
+    "phase1_report.md changed after CP4 lock because the report was localized and its lineage paths were made portable; locked metrics/answers/quality/freshness remain unchanged."
+  ],
+  "artifact_sha256": {
+    "data/raw/crossref_response.json": "D23EDA296B9EBB9FABF522910C62D0BE4E193137C897568E3905F0AF84987690",
+    "data/raw/crossref_records.json": "55897CCA77F67CE815D9CB67EA9DA726EC66CCA210020E2570884C8F00987D33",
+    "data/clean/papers_clean.json": "37B209C5077FBA117714E0A02FA3E915E8EA25D6A6DD7F67D281DFDC969CFB82",
+    "data/clean/papers_clean_corrupted.json": "8E909100C4FCA5C8E2C4F16709D100C578AB7949DCFDE376FF7B4A3FB80B3241",
+    "data/clean/papers_clean_repaired.json": "37B209C5077FBA117714E0A02FA3E915E8EA25D6A6DD7F67D281DFDC969CFB82",
+    "data/embeddings/papers_embeddings.json": "900FF3FFA35518A77A3EB709FB75479BB33B6E55F61B004CA2936B5369A5F4A6",
+    "data/embeddings/papers_embeddings_corrupted.json": "14773FB5AA8BDEF571C7ADA137958DDBF11D190CF3A011A90D8C143F8C1B7976",
+    "data/embeddings/papers_embeddings_repaired.json": "AC348E9CC3D839846C17927C0287DCB8A8156646FD07152D79654AF5FB9D74DC",
+    "data/eval/test_set.json": "90D8ED972B2DBBB84C35E22FB8E0DFE9B775839433A05065B2242C7836083139",
+    "data/results/baseline_metrics.json": "4CED1B76F6A8796F264D2AF72E0E9CB795AFC84F359EC3FDD4C6772B933C1DE5",
+    "data/results/corrupted_metrics.json": "1F944A102CD411934EEAC062FA6AF99AADC9BDF934F4AE8CA640EFA1C24273C4",
+    "data/results/repaired_metrics.json": "4CED1B76F6A8796F264D2AF72E0E9CB795AFC84F359EC3FDD4C6772B933C1DE5",
+    "data/results/baseline_answers.json": "AE744A67D7DC1A2C9E025EBFA3B71C5137922928ED3DD9EA6FB38C3B1999AA3C",
+    "data/results/corrupted_answers.json": "4003A2BC05589CDD84BC0E209C5B8D1F33785C5EFA58171619DA60A4C6D78823",
+    "data/results/repaired_answers.json": "EFF8CE1674B4451F1F4BE65BD0EC407CFFD933E3668660EFD07CCD2723C30573",
+    "data/quality/baseline_quality_report.json": "861B45DE8B6325A6382C839307C19FF553BB8634A018B5EC1B461401A20E8572",
+    "data/quality/corrupted_quality_report.json": "17F997AFE541A9A37ADB52BBD514A81110BAE0E75966A44133504C00795BFEA0",
+    "data/quality/repaired_quality_report.json": "71403F731B5C3559BC16590A9B0D87CDB921B4E20A2ADF8B9965F3087154A02A",
+    "data/quality/freshness_report.json": "3010626284CC2F3B5E6298410DC97AAAE56901EE648A0DC286B13DDBC48FD175",
+    "data/quality/freshness_report_corrupted.json": "DEB57CC41ED5E3903D620A2F409E36F5BE221D61D130A50CB15843BC131B0EF4",
+    "data/quality/freshness_report_repaired.json": "3010626284CC2F3B5E6298410DC97AAAE56901EE648A0DC286B13DDBC48FD175",
+    "data/results/corruption_log.json": "5093FC926CBD00A7AF4608664238F4D8993C5840BE0C98A444829729EDC1C8FD",
+    "data/results/checkpoint4_baseline_lock.json": "93574209B14CC5BC754D79983F9A6C17F65144B50F383864C39CD27A31C02D20",
+    "data/reports/phase1_report.md": "DCCA58FA5EFC0C1EF0FB3125F218746A118C48C04436654E3D4C26AD45EB7C80",
+    "data/reports/corruption_report.md": "FCFDCC10C967ABEDA68B34732100917323A495A9E7229D896CD230889AB05BFC"
+  }
+}

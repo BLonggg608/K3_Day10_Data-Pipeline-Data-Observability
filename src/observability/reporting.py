@@ -161,6 +161,8 @@ def generate_corruption_report(
     repaired_quality: dict[str, Any],
     corrupted_freshness: dict[str, Any],
     repaired_freshness: dict[str, Any],
+    baseline_quality: dict[str, Any] | None = None,
+    baseline_freshness: dict[str, Any] | None = None,
 ) -> None:
     """Viet markdown report so sanh baseline/corrupted/repaired."""
     metric_names = ("retrieval_hit_rate", "mean_token_f1", "judge_accuracy", "mean_judge_score")
@@ -185,11 +187,13 @@ def generate_corruption_report(
 
 ## Data quality
 
+{_quality_section("Baseline", baseline_quality) if baseline_quality else ""}
 {_quality_section("Corrupted", corrupted_quality)}
 {_quality_section("Repaired", repaired_quality)}
 
 ## Freshness
 
+{_freshness_section("Baseline", baseline_freshness) if baseline_freshness else ""}
 {_freshness_section("Corrupted", corrupted_freshness)}
 {_freshness_section("Repaired", repaired_freshness)}
 

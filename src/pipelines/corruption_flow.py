@@ -66,6 +66,13 @@ def run_corruption_flow(settings: Settings | None = None) -> dict[str, Any]:
 
     baseline_df = load_clean_csv(settings.paths.clean_csv, "baseline artifact")
     baseline_metrics = read_json(settings.paths.baseline_metrics)
+    baseline_quality_path = settings.paths.quality_dir / "baseline_quality_report.json"
+    require_artifacts(
+        [baseline_quality_path, settings.paths.freshness_report],
+        stage="corruption comparison",
+    )
+    baseline_quality = read_json(baseline_quality_path)
+    baseline_freshness = read_json(settings.paths.freshness_report)
 
     corrupted_df = corrupt_clean_dataframe(
         baseline_df.copy(deep=True),
@@ -125,6 +132,8 @@ def run_corruption_flow(settings: Settings | None = None) -> dict[str, Any]:
         repaired_quality=repaired["quality"],
         corrupted_freshness=corrupted["freshness"],
         repaired_freshness=repaired["freshness"],
+        baseline_quality=baseline_quality,
+        baseline_freshness=baseline_freshness,
     )
 
     return {

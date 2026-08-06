@@ -1,11 +1,7 @@
 {
   "backend": "chroma",
   "embedding_model": "sentence-transformers/all-MiniLM-L6-v2",
-<<<<<<< HEAD
-  "persist_path": "D:\\VinAI\\Lab\\K3_Day10_Data-Pipeline-Data-Observability\\data\\chroma",
-=======
-  "persist_path": "D:\\hocHanh\\VinUni\\K3_Day10_Data-Pipeline-Data-Observability\\data\\chroma",
->>>>>>> f8a4485a5c4564f755509f6484be16584aa4ab99
+  "persist_path": "data/chroma",
   "collection_name": "papers-repaired",
   "documents": [
     {
