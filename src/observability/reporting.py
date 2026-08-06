@@ -111,6 +111,47 @@ Báo cáo này được tạo từ metrics baseline, kết quả kiểm tra ch�
     write_text(report_path, text)
 
 
+def _delta(current: Any, baseline: Any) -> str:
+    if isinstance(current, (int, float)) and isinstance(baseline, (int, float)):
+        diff = current - baseline
+        sign = "+" if diff >= 0 else ""
+        return f"{sign}{diff:.4f}"
+    return "N/A"
+
+
+def _quality_section(title: str, quality: dict[str, Any]) -> str:
+    check_rows = "\n".join(
+        f"| {CHECK_LABELS.get(item['name'], item['name'])} | "
+        f"{DIMENSION_LABELS.get(item['dimension'], item['dimension'])} | "
+        f"{'PASS' if item['success'] else 'FAIL'} | {item['observed']} |"
+        for item in quality.get("checks", [])
+    ) or "| Không có check | N/A | FAIL | N/A |"
+    return f"""### {title}
+
+- Overall status: **{'PASS' if quality.get('success') else 'FAIL'}**
+- Passed checks: {quality.get('passed_checks', 0)}
+- Failed checks: {quality.get('failed_checks', 0)}
+
+| Check | Dimension | Status | Observed |
+| --- | --- | --- | ---: |
+{check_rows}
+"""
+
+
+def _freshness_section(title: str, freshness: dict[str, Any]) -> str:
+    return f"""### {title}
+
+| Field | Value |
+| --- | --- |
+| Latest published | {freshness.get('latest_published', 'N/A')} |
+| Oldest published | {freshness.get('oldest_published', 'N/A')} |
+| Freshness threshold (days) | {freshness.get('freshness_threshold_days', 'N/A')} |
+| Stale rows | {freshness.get('stale_rows', 'N/A')} |
+| Invalid date rows | {freshness.get('invalid_date_rows', 'N/A')} |
+| Status | {'FRESH' if freshness.get('is_fresh') else 'STALE/INVALID'} |
+"""
+
+
 def generate_corruption_report(
     report_path,
     baseline_metrics: dict[str, Any],
@@ -121,90 +162,39 @@ def generate_corruption_report(
     corrupted_freshness: dict[str, Any],
     repaired_freshness: dict[str, Any],
 ) -> None:
-    """Tạo comparison report từ metrics và observability artifacts thực tế."""
-    metric_names = (
-        "retrieval_hit_rate",
-        "mean_token_f1",
-        "judge_accuracy",
-        "mean_judge_score",
+    """Viet markdown report so sanh baseline/corrupted/repaired."""
+    metric_names = ("retrieval_hit_rate", "mean_token_f1", "judge_accuracy", "mean_judge_score")
+    metric_rows = "\n".join(
+        f"| `{name}` | {_metric(baseline_metrics.get(name, 'N/A'))} | "
+        f"{_metric(corrupted_metrics.get(name, 'N/A'))} | "
+        f"{_delta(corrupted_metrics.get(name), baseline_metrics.get(name))} | "
+        f"{_metric(repaired_metrics.get(name, 'N/A'))} | "
+        f"{_delta(repaired_metrics.get(name), baseline_metrics.get(name))} |"
+        for name in metric_names
     )
-    metric_rows = []
-    degraded_metrics = []
-    recovered_metrics = []
-    for name in metric_names:
-        baseline = baseline_metrics.get(name)
-        corrupted = corrupted_metrics.get(name)
-        repaired = repaired_metrics.get(name)
-        if not all(isinstance(value, (int, float)) for value in (baseline, corrupted, repaired)):
-            metric_rows.append(f"| `{name}` | N/A | N/A | N/A | N/A | N/A |")
-            continue
-        corruption_delta = corrupted - baseline
-        repair_delta = repaired - corrupted
-        metric_rows.append(
-            f"| `{name}` | {_metric(baseline)} | {_metric(corrupted)} | "
-            f"{_metric(repaired)} | {corruption_delta:+.4f} | {repair_delta:+.4f} |"
-        )
-        if corrupted < baseline:
-            degraded_metrics.append(name)
-        if corrupted < baseline and repaired > corrupted:
-            recovered_metrics.append(name)
+    text = f"""# Báo cáo so sánh Corruption: Baseline → Corrupted → Repaired
 
-    quality_rows = "\n".join(
-        (
-            f"| {state} | {'PASS' if payload.get('success') else 'FAIL'} | "
-            f"{payload.get('passed_checks', 'N/A')} | {payload.get('failed_checks', 'N/A')} |"
-        )
-        for state, payload in (
-            ("Corrupted", corrupted_quality),
-            ("Repaired", repaired_quality),
-        )
-    )
-    freshness_rows = "\n".join(
-        (
-            f"| {state} | {'FRESH' if payload.get('is_fresh') else 'STALE/INVALID'} | "
-            f"{payload.get('stale_rows', 'N/A')} | {payload.get('invalid_date_rows', 'N/A')} |"
-        )
-        for state, payload in (
-            ("Corrupted", corrupted_freshness),
-            ("Repaired", repaired_freshness),
-        )
-    )
-    degraded_text = ", ".join(f"`{name}`" for name in degraded_metrics) or "Không có metric nào"
-    recovered_text = ", ".join(f"`{name}`" for name in recovered_metrics) or "Không có metric nào"
+## Retrieval và answer metrics
 
-    text = f"""# Báo cáo corruption, repair và comparison
-
-## Evaluation contract
-
-- Baseline, corrupted và repaired dùng cùng test set và metric names.
-- Baseline judge mode: `{baseline_metrics.get('judge_mode', 'N/A')}`.
-- Corrupted judge mode: `{corrupted_metrics.get('judge_mode', 'N/A')}`.
-- Repaired judge mode: `{repaired_metrics.get('judge_mode', 'N/A')}`.
-- Ragas được ghi nhận theo artifact; bước bị skip không được coi là PASS.
-
-## Metrics comparison
-
-| Metric | Baseline | Corrupted | Repaired | Corruption delta | Repair delta |
+| Metric | Baseline | Corrupted | Δ (Corrupted − Baseline) | Repaired | Δ (Repaired − Baseline) |
 | --- | ---: | ---: | ---: | ---: | ---: |
-{chr(10).join(metric_rows)}
+{metric_rows}
+
+- Corrupted samples: {corrupted_metrics.get('samples', 'N/A')}
+- Repaired samples: {repaired_metrics.get('samples', 'N/A')}
 
 ## Data quality
 
-| State | Overall status | Passed checks | Failed checks |
-| --- | --- | ---: | ---: |
-{quality_rows}
+{_quality_section("Corrupted", corrupted_quality)}
+{_quality_section("Repaired", repaired_quality)}
 
 ## Freshness
 
-| State | Status | Stale rows | Invalid date rows |
-| --- | --- | ---: | ---: |
-{freshness_rows}
+{_freshness_section("Corrupted", corrupted_freshness)}
+{_freshness_section("Repaired", repaired_freshness)}
 
-## Kết luận dựa trên evidence
+## Evidence boundary
 
-- Metrics giảm sau corruption: {degraded_text}.
-- Metrics tăng lại sau repair: {recovered_text}.
-- Corruption chỉ được kết luận có impact đối với metrics hoặc quality/freshness signals thực sự thay đổi trong bảng trên.
-- Repair chỉ được xem là phục hồi hoàn toàn khi repaired metrics và signals quay về baseline; nếu không, report giữ nguyên chênh lệch thay vì tô đẹp kết quả.
+Báo cáo này được tạo hoàn toàn từ metrics, quality checks và freshness report thật của ba trạng thái baseline/corrupted/repaired; không có số liệu nào bị chỉnh sửa thủ công. Nếu repaired chưa khôi phục hoàn toàn về mức baseline, delta ở trên sẽ vẫn khác 0 và cần được nêu rõ khi demo thay vì tô hồng kết quả.
 """
     write_text(report_path, text)
