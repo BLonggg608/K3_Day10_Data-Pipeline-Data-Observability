@@ -1,12 +1,30 @@
 from __future__ import annotations
 
+from pathlib import Path
+from typing import Any
+
 import pandas as pd
 
+from core.utils import write_json
 
-import json
-import random
-import pandas as pd
-from datetime import timedelta
+
+def _target_indices(df: pd.DataFrame, count: int, offset: int) -> list[int]:
+    """Select deterministic, non-overlapping records by stable paper_id order."""
+    ordered = df.sort_values("paper_id").index.tolist()
+    if not ordered:
+        return []
+    start = min(offset, len(ordered) - 1)
+    return ordered[start : start + count]
+
+
+def _log_entry(kind: str, df: pd.DataFrame, indices: list[int], **parameters: Any) -> dict[str, Any]:
+    return {
+        "type": kind,
+        "count": len(indices),
+        "paper_ids": [str(value) for value in df.loc[indices, "paper_id"].tolist()],
+        "parameters": parameters,
+    }
+
 
 def _log_entry(c_type, param, before, after, affected_ids):
     return {

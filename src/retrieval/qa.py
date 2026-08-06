@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
+import math
 import re
 
 from core.config import Settings
@@ -17,16 +18,22 @@ class AnswerResult:
     retrieved_titles: list[str]
 
 
+def _metadata_text(value) -> str:
+    if value is None or (isinstance(value, float) and math.isnan(value)):
+        return ""
+    return str(value)
+
+
 def _extract_answer(question: str, top_result: SearchResult) -> str:
     lowered = question.lower()
     metadata = top_result.metadata
     if "who authored" in lowered or "list the authors" in lowered:
-        return metadata["authors_joined"]
+        return _metadata_text(metadata.get("authors_joined"))
     if "when was" in lowered or "publication date" in lowered or "published on" in lowered:
-        return metadata["published"]
+        return _metadata_text(metadata.get("published"))
     if "what categories" in lowered:
-        return metadata["categories_joined"]
-    return first_sentence(metadata["summary"])
+        return _metadata_text(metadata.get("categories_joined"))
+    return first_sentence(_metadata_text(metadata.get("summary")))
 
 
 def answer_question(question: str, settings: Settings, index: LocalEmbeddingIndex, top_k: int | None = None) -> AnswerResult:
