@@ -80,6 +80,32 @@ class LocalEmbeddingIndex:
             return name_map[resolved_path]
         return safe_slug(embeddings_output_path.stem)
 
+    @staticmethod
+    def _manifest_persist_path(settings: Settings, persist_path: Path) -> str:
+        """Store a project-relative path so manifests work across machines."""
+        try:
+            return persist_path.resolve().relative_to(settings.paths.project_dir.resolve()).as_posix()
+        except ValueError:
+            return str(persist_path.resolve())
+
+    @staticmethod
+    def _resolve_persist_path(settings: Settings, value: str | None) -> Path:
+        """Resolve manifests safely without opening another checkout's ChromaDB."""
+        configured = settings.paths.chroma_dir.resolve()
+        if not value:
+            return configured
+        candidate = Path(value)
+        if not candidate.is_absolute():
+            candidate = (settings.paths.project_dir / candidate).resolve()
+        else:
+            candidate = candidate.resolve()
+        project_root = settings.paths.project_dir.resolve()
+        try:
+            candidate.relative_to(project_root)
+        except ValueError:
+            return configured
+        return candidate
+
     @classmethod
     def build(
         cls,
@@ -116,7 +142,7 @@ class LocalEmbeddingIndex:
             {
                 "backend": "chroma",
                 "embedding_model": settings.embedding_model,
-                "persist_path": str(persist_path),
+                "persist_path": cls._manifest_persist_path(settings, persist_path),
                 "collection_name": collection_name,
                 "documents": documents,
             },
@@ -135,7 +161,7 @@ class LocalEmbeddingIndex:
             settings=settings,
             collection_name=payload["collection_name"],
             documents=payload["documents"],
-            persist_path=Path(payload["persist_path"]),
+            persist_path=cls._resolve_persist_path(settings, payload.get("persist_path")),
         )
 
     def search(self, query: str, top_k: int | None = None) -> list[SearchResult]:
