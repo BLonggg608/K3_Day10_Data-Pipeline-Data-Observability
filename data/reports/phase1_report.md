@@ -10,8 +10,8 @@
 | Filter | from-pub-date:2026-02-07,has-abstract:true |
 | Raw records | 24 |
 | Clean records | 24 |
-| Raw response | `D:\Studies\vinuni\day-10\K3_Day10_Data-Pipeline-Data-Observability\data\raw\crossref_response.json` |
-| Raw records artifact | `D:\Studies\vinuni\day-10\K3_Day10_Data-Pipeline-Data-Observability\data\raw\crossref_records.json` |
+| Raw response | `D:\VinAI\Lab\K3_Day10_Data-Pipeline-Data-Observability\data\raw\crossref_response.json` |
+| Raw records artifact | `D:\VinAI\Lab\K3_Day10_Data-Pipeline-Data-Observability\data\raw\crossref_records.json` |
 
 ## Retrieval and answer metrics
 
