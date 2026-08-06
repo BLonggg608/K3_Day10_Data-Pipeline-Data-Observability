@@ -1,7 +1,7 @@
-# Checkpoint 6 — Release review
+# Checkpoint 6 — Rà soát release
 
-- Status: **READY FOR RELEASE**
-- Checks: **22/22 PASS**
+- Trạng thái: **SẴN SÀNG RELEASE**
+- Kết quả kiểm tra: **22/22 PASS**
 - Test-set SHA-256: `90D8ED972B2DBBB84C35E22FB8E0DFE9B775839433A05065B2242C7836083139`
 
 ## Evidence theo 5 vai trò
@@ -21,9 +21,9 @@
 | `judge_accuracy` | 0.9583 | 0.7917 | 0.9583 |
 | `mean_judge_score` | 4.8333 | 4.2500 | 4.8333 |
 
-## Release checks
+## Các kiểm tra trước release
 
-| Check | Status | Details |
+| Check | Trạng thái | Chi tiết |
 | --- | --- | --- |
 | raw_snapshot_available | PASS | `{"records": 24}` |
 | repair_matches_baseline_clean | PASS | `{"baseline_rows": 24, "repaired_rows": 24}` |
@@ -48,10 +48,10 @@
 | no_student_todo_or_merge_marker | PASS | `{"locations": []}` |
 | portable_report_paths | PASS | `{"report": "data/reports/phase1_report.md"}` |
 
-## Warnings đã audit
+## Warning đã được audit
 
-- phase1_report.md changed after CP4 lock because the report was localized and its lineage paths were made portable; locked metrics/answers/quality/freshness remain unchanged.
+- phase1_report.md thay đổi sau khi baseline được khóa ở CP4 vì report đã được Việt hóa và các lineage path đã được chuyển thành path portable; metrics, answers, quality và freshness đã khóa vẫn không thay đổi.
 
 ## Kết luận
 
-Corruption làm giảm answer metrics trong khi retrieval hit rate vẫn giữ nguyên; quality và freshness phát hiện duplicate, summary rỗng và record stale. Repair từ raw snapshot khôi phục clean dataset, quality/freshness và toàn bộ metrics về baseline. Ragas không được bật nên không có kết luận dựa trên Ragas.
+Corruption làm giảm answer metrics trong khi `retrieval_hit_rate` vẫn giữ nguyên; quality và freshness phát hiện duplicate, summary rỗng và record stale. Repair từ raw snapshot khôi phục clean dataset, quality/freshness và toàn bộ metrics về baseline. Ragas không được bật nên không có kết luận dựa trên Ragas.
