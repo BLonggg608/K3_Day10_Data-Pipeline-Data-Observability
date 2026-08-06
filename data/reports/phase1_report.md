@@ -34,14 +34,14 @@
 
 | Check | Dimension | Status | Observed |
 | --- | --- | --- | ---: |
-| Row count | Completeness | PASS | 24 |
+| Số lượng row | Completeness | PASS | 24 |
 | paper_id không rỗng | Completeness | PASS | 0 |
 | paper_id duy nhất | Uniqueness | PASS | 0 |
 | title không rỗng | Completeness | PASS | 0 |
 | summary không rỗng | Completeness | PASS | 0 |
 | embedding text không rỗng | Completeness | PASS | 0 |
 | age_days hợp lệ | Validity | PASS | 0 |
-| Records nằm trong freshness threshold | Freshness | PASS | 0 |
+| Record nằm trong freshness threshold | Freshness | PASS | 0 |
 
 ## Freshness
 

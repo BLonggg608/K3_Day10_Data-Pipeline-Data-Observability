@@ -306,8 +306,9 @@ def main() -> None:
     new_report_hash = _sha256(paths.baseline_report)
     if old_report_hash and old_report_hash != new_report_hash:
         warnings.append(
-            "phase1_report.md changed after CP4 lock because the report was localized and "
-            "its lineage paths were made portable; locked metrics/answers/quality/freshness remain unchanged."
+            "phase1_report.md thay đổi sau khi baseline được khóa ở CP4 vì report đã được "
+            "Việt hóa và các lineage path đã được chuyển thành path portable; metrics, answers, "
+            "quality và freshness đã khóa vẫn không thay đổi."
         )
 
     key_artifacts = list(required.values()) + [paths.baseline_report, paths.comparison_report]
@@ -333,10 +334,10 @@ def main() -> None:
         f"| `{name}` | {baseline_metrics[name]:.4f} | {corrupted_metrics[name]:.4f} | {repaired_metrics[name]:.4f} |"
         for name in metric_names
     )
-    report = f"""# Checkpoint 6 — Release review
+    report = f"""# Checkpoint 6 — Rà soát release
 
-- Status: **{'READY FOR RELEASE' if success else 'BLOCKED'}**
-- Checks: **{sum(item['success'] for item in checks)}/{len(checks)} PASS**
+- Trạng thái: **{'SẴN SÀNG RELEASE' if success else 'BỊ CHẶN'}**
+- Kết quả kiểm tra: **{sum(item['success'] for item in checks)}/{len(checks)} PASS**
 - Test-set SHA-256: `{_sha256(paths.eval_testset)}`
 
 ## Evidence theo 5 vai trò
@@ -353,19 +354,19 @@ def main() -> None:
 | --- | ---: | ---: | ---: |
 {metric_rows}
 
-## Release checks
+## Các kiểm tra trước release
 
-| Check | Status | Details |
+| Check | Trạng thái | Chi tiết |
 | --- | --- | --- |
 {check_rows}
 
-## Warnings đã audit
+## Warning đã được audit
 
 {warning_lines}
 
 ## Kết luận
 
-Corruption làm giảm answer metrics trong khi retrieval hit rate vẫn giữ nguyên; quality và freshness phát hiện duplicate, summary rỗng và record stale. Repair từ raw snapshot khôi phục clean dataset, quality/freshness và toàn bộ metrics về baseline. Ragas không được bật nên không có kết luận dựa trên Ragas.
+Corruption làm giảm answer metrics trong khi `retrieval_hit_rate` vẫn giữ nguyên; quality và freshness phát hiện duplicate, summary rỗng và record stale. Repair từ raw snapshot khôi phục clean dataset, quality/freshness và toàn bộ metrics về baseline. Ragas không được bật nên không có kết luận dựa trên Ragas.
 """
     write_text(RELEASE_REPORT, report)
     print(f"CP6 release status: {payload['status']} ({payload['checks_passed']}/{payload['checks_total']} checks passed)")

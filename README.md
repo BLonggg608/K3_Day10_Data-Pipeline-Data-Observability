@@ -200,6 +200,20 @@ python script/run_corruption_flow.py
 
 ## 6. Kiểm tra kết quả
 
+### UI demo Baseline → Corrupted → Repaired
+
+Sau khi đã chạy baseline và corruption flow, mở dashboard bằng Conda environment `test_vin` trên Windows CMD:
+
+```cmd
+set PYTHONPATH=src
+C:\Users\ADMIN\miniconda3\envs\test_vin\python.exe -m streamlit run app.py
+```
+
+Dashboard đọc trực tiếp metrics, quality/freshness report, corruption log và ba Chroma collections trong `data/`. Tab RAG Demo có hai chế độ:
+
+- `Local QA`: chạy cùng một query trên Baseline, Corrupted và Repaired bằng MiniLM + Chroma mà không gọi LLM provider.
+- `OpenAI Agent`: dùng `gpt-4o-mini`; agent gọi semantic search hoặc exact lookup tool trên từng collection trước khi trả lời và hiển thị tool trace trong UI. Chế độ này yêu cầu `LLM_PROVIDER=openai`, `LLM_MODEL=gpt-4o-mini` và `OPENAI_API_KEY` trong `.env`.
+
 Sau baseline, tối thiểu cần kiểm tra:
 
 - `data/raw/`: raw response và records từ Crossref

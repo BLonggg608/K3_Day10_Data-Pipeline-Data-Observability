@@ -190,7 +190,7 @@
     }
   ],
   "warnings": [
-    "phase1_report.md changed after CP4 lock because the report was localized and its lineage paths were made portable; locked metrics/answers/quality/freshness remain unchanged."
+    "phase1_report.md thay đổi sau khi baseline được khóa ở CP4 vì report đã được Việt hóa và các lineage path đã được chuyển thành path portable; metrics, answers, quality và freshness đã khóa vẫn không thay đổi."
   ],
   "artifact_sha256": {
     "data/raw/crossref_response.json": "D23EDA296B9EBB9FABF522910C62D0BE4E193137C897568E3905F0AF84987690",
@@ -198,7 +198,7 @@
     "data/clean/papers_clean.json": "37B209C5077FBA117714E0A02FA3E915E8EA25D6A6DD7F67D281DFDC969CFB82",
     "data/clean/papers_clean_corrupted.json": "8E909100C4FCA5C8E2C4F16709D100C578AB7949DCFDE376FF7B4A3FB80B3241",
     "data/clean/papers_clean_repaired.json": "37B209C5077FBA117714E0A02FA3E915E8EA25D6A6DD7F67D281DFDC969CFB82",
-    "data/embeddings/papers_embeddings.json": "900FF3FFA35518A77A3EB709FB75479BB33B6E55F61B004CA2936B5369A5F4A6",
+    "data/embeddings/papers_embeddings.json": "C4DA53F6FF264BF91484F997A7BD4A4E8F7A9203E89C433E60DAA8FE5EAD997F",
     "data/embeddings/papers_embeddings_corrupted.json": "713725BF7CD617A0B9E16F69C9252E45C17F3454672E840C5804582099ED0D30",
     "data/embeddings/papers_embeddings_repaired.json": "30C8D9170C39F3FAB618384F39F308EF43BBBB2BCAD6D78210EA090D7BD46C38",
     "data/eval/test_set.json": "90D8ED972B2DBBB84C35E22FB8E0DFE9B775839433A05065B2242C7836083139",
@@ -216,7 +216,7 @@
     "data/quality/freshness_report_repaired.json": "3010626284CC2F3B5E6298410DC97AAAE56901EE648A0DC286B13DDBC48FD175",
     "data/results/corruption_log.json": "5093FC926CBD00A7AF4608664238F4D8993C5840BE0C98A444829729EDC1C8FD",
     "data/results/checkpoint4_baseline_lock.json": "93574209B14CC5BC754D79983F9A6C17F65144B50F383864C39CD27A31C02D20",
-    "data/reports/phase1_report.md": "DCCA58FA5EFC0C1EF0FB3125F218746A118C48C04436654E3D4C26AD45EB7C80",
-    "data/reports/corruption_report.md": "FCFDCC10C967ABEDA68B34732100917323A495A9E7229D896CD230889AB05BFC"
+    "data/reports/phase1_report.md": "39A02C99BF4CBF3EAC4B06500F99BBEC51B0BA987D5954C41374A3B9515F81F8",
+    "data/reports/corruption_report.md": "F001469570F2F9F464D800117E666DFCD1A3054020523E00725213E22C1E9461"
   }
 }
