@@ -25,7 +25,7 @@
     "judge": {
       "score": 2,
       "correct": false,
-      "reasoning": "The model answer does not provide any information about the paper's content, focusing instead on a general statement about diagnosing jawbone lesions without addressing the specifics of the study or its framework."
+      "reasoning": "The model answer does not provide any information about the paper's content, focusing instead on a return format without addressing the question."
     }
   },
   {
@@ -141,7 +141,7 @@
     "judge": {
       "score": 5,
       "correct": true,
-      "reasoning": "The model answer is identical to the reference answer, accurately summarizing the key points about the limitations of generic Large Language Models in high-stakes contexts like sleep medicine."
+      "reasoning": "The model answer is identical to the reference answer, accurately summarizing the key points about the limitations of generic Large Language Models in high-stakes contexts."
     }
   },
   {
@@ -286,7 +286,7 @@
     "judge": {
       "score": 1,
       "correct": false,
-      "reasoning": "The model answer incorrectly attributes the authorship of the paper to Lihui Liu, while the reference answer correctly identifies Wei Tian and Yuhao Zhou as the authors."
+      "reasoning": "The model answer incorrectly identifies the author of the paper, as the correct authors are Wei Tian and Yuhao Zhou."
     }
   },
   {
@@ -487,7 +487,7 @@
     "judge": {
       "score": 5,
       "correct": true,
-      "reasoning": "The model answer is identical to the reference answer, accurately summarizing the paper's focus on integrating retrieval-augmented mechanisms into large language model agents for generating scientific literature reviews."
+      "reasoning": "The model answer is identical to the reference answer, accurately summarizing the content of the paper."
     }
   },
   {
@@ -514,7 +514,7 @@
     "judge": {
       "score": 5,
       "correct": true,
-      "reasoning": "The model answer matches the reference answer exactly, listing all authors correctly."
+      "reasoning": "The model answer matches the reference answer exactly, providing all the authors' names correctly."
     }
   },
   {
@@ -597,7 +597,7 @@
     "judge": {
       "score": 1,
       "correct": false,
-      "reasoning": "The model answer is identical to the reference answer but does not address the question about the paper on 'Microsoft Azure artificial intelligence / machine learning hackathon.' It fails to provide relevant information regarding the topic."
+      "reasoning": "The model answer is identical to the reference answer but does not address the question about the paper on 'Microsoft Azure artificial intelligence / machine learning hackathon.' It fails to provide relevant information about the topic."
     }
   },
   {
