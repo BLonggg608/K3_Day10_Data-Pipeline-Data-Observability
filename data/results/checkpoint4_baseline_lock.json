@@ -1,0 +1,85 @@
+{
+  "checkpoint": 4,
+  "status": "ready_for_corruption",
+  "baseline_commit": "020a096",
+  "locked_evaluation_contract": {
+    "test_set_path": "data/eval/test_set.json",
+    "test_set_sha256": "90D8ED972B2DBBB84C35E22FB8E0DFE9B775839433A05065B2242C7836083139",
+    "samples": 24,
+    "top_k": 4,
+    "evaluator": "src/evaluation/metrics.py",
+    "rule": "Use the same test set, evaluator, and top_k for baseline, corrupted, and repaired runs."
+  },
+  "baseline_artifacts": {
+    "metrics": {
+      "path": "data/results/baseline_metrics.json",
+      "sha256": "4CED1B76F6A8796F264D2AF72E0E9CB795AFC84F359EC3FDD4C6772B933C1DE5"
+    },
+    "answers": {
+      "path": "data/results/baseline_answers.json",
+      "sha256": "AE744A67D7DC1A2C9E025EBFA3B71C5137922928ED3DD9EA6FB38C3B1999AA3C"
+    },
+    "quality": {
+      "path": "data/quality/baseline_quality_report.json",
+      "sha256": "861B45DE8B6325A6382C839307C19FF553BB8634A018B5EC1B461401A20E8572"
+    },
+    "freshness": {
+      "path": "data/quality/freshness_report.json",
+      "sha256": "3010626284CC2F3B5E6298410DC97AAAE56901EE648A0DC286B13DDBC48FD175"
+    },
+    "phase1_report": {
+      "path": "data/reports/phase1_report.md",
+      "sha256": "73CD82FC550AF98AFB5B7A3D5185D356B6F27009E0CEE74A0C2CED0A00F63D18"
+    }
+  },
+  "baseline_metrics": {
+    "retrieval_hit_rate": 1.0,
+    "mean_token_f1": 1.0,
+    "judge_accuracy": 0.9583333333333334,
+    "mean_judge_score": 4.833333333333333,
+    "judge_mode": "llm"
+  },
+  "baseline_signals": {
+    "row_count": 24,
+    "blank_paper_ids": 0,
+    "duplicate_paper_ids": 0,
+    "blank_titles": 0,
+    "blank_summaries": 0,
+    "stale_rows": 0,
+    "invalid_date_rows": 0,
+    "freshness_threshold_days": 180,
+    "is_fresh": true
+  },
+  "corruption_expectations": [
+    {
+      "corruption": "drop latest records",
+      "expected_signals": ["row_count decreases", "latest_published may become older"],
+      "possible_rag_impact": ["retrieval_hit_rate decreases for removed ground-truth papers"]
+    },
+    {
+      "corruption": "blank summaries",
+      "expected_signals": ["blank summary count increases"],
+      "possible_rag_impact": ["retrieval context and answer quality may decrease"]
+    },
+    {
+      "corruption": "duplicate rows",
+      "expected_signals": ["duplicate paper_id count increases", "row_count increases"],
+      "possible_rag_impact": ["duplicate documents may crowd retrieval results"]
+    },
+    {
+      "corruption": "make publication dates older",
+      "expected_signals": ["age_days increases", "stale_rows may increase", "is_fresh may become false"],
+      "possible_rag_impact": ["freshness degrades even if answer metrics do not change"]
+    },
+    {
+      "corruption": "inject text noise or truncate titles",
+      "expected_signals": ["basic null and duplicate checks may remain unchanged"],
+      "possible_rag_impact": ["retrieved document ranking and answer metrics may decrease"]
+    }
+  ],
+  "known_baseline_limitations": [
+    "Ragas was skipped because RUN_RAGAS was not enabled.",
+    "The clean snapshot has categories_joined=Unknown for all rows, so category questions have weak informational value.",
+    "One LLM judge result disagrees with exact token match, showing that judge output requires case-level review."
+  ]
+}
