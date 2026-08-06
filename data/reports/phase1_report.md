@@ -1,19 +1,19 @@
-# Phase 1 Baseline Report
+# Báo cáo baseline Pha 1
 
-## Source and lineage
+## Data source và lineage
 
 | Field | Value |
 | --- | --- |
 | Source | Crossref REST API |
-| Load mode | saved raw snapshot |
+| Load mode | Dùng raw snapshot đã lưu |
 | Query | agentic retrieval augmented generation large language model |
 | Filter | from-pub-date:2026-02-07,has-abstract:true |
 | Raw records | 24 |
 | Clean records | 24 |
-| Raw response | `D:\VinAI\Lab\K3_Day10_Data-Pipeline-Data-Observability\data\raw\crossref_response.json` |
-| Raw records artifact | `D:\VinAI\Lab\K3_Day10_Data-Pipeline-Data-Observability\data\raw\crossref_records.json` |
+| Raw response | `D:\Studies\vinuni\day-10\K3_Day10_Data-Pipeline-Data-Observability\data\raw\crossref_response.json` |
+| Artifact raw records | `D:\Studies\vinuni\day-10\K3_Day10_Data-Pipeline-Data-Observability\data\raw\crossref_records.json` |
 
-## Retrieval and answer metrics
+## Retrieval và answer metrics
 
 | Metric | Value |
 | --- | ---: |
@@ -23,8 +23,8 @@
 | `mean_judge_score` | 4.8333 |
 
 - Evaluation samples: 24
-- Judge mode: llm (24 LLM / 0 fallback)
-- Ragas: `{'skipped': 'Set RUN_RAGAS=1 to enable the slower Ragas pass.'}`
+- Judge mode: llm (24 LLM samples / 0 fallback samples)
+- Ragas: Đã bỏ qua (chưa bật `RUN_RAGAS=1`).
 
 ## Data quality
 
@@ -34,14 +34,14 @@
 
 | Check | Dimension | Status | Observed |
 | --- | --- | --- | ---: |
-| row_count | completeness | PASS | 24 |
-| paper_id_not_blank | completeness | PASS | 0 |
-| paper_id_unique | uniqueness | PASS | 0 |
-| title_not_blank | completeness | PASS | 0 |
-| summary_not_blank | completeness | PASS | 0 |
-| embedding_text_not_blank | completeness | PASS | 0 |
-| age_days_valid | validity | PASS | 0 |
-| records_within_freshness_threshold | freshness | PASS | 0 |
+| Row count | Completeness | PASS | 24 |
+| paper_id không rỗng | Completeness | PASS | 0 |
+| paper_id duy nhất | Uniqueness | PASS | 0 |
+| title không rỗng | Completeness | PASS | 0 |
+| summary không rỗng | Completeness | PASS | 0 |
+| embedding text không rỗng | Completeness | PASS | 0 |
+| age_days hợp lệ | Validity | PASS | 0 |
+| Records nằm trong freshness threshold | Freshness | PASS | 0 |
 
 ## Freshness
 
@@ -49,11 +49,11 @@
 | --- | --- |
 | Latest published | 2026-08-01 |
 | Oldest published | 2026-02-12 |
-| Threshold (days) | 180 |
+| Freshness threshold (days) | 180 |
 | Stale rows | 0 |
 | Invalid date rows | 0 |
 | Status | FRESH |
 
 ## Evidence boundary
 
-This report is generated from the saved baseline metrics, quality checks, freshness results, and raw-source lineage. Ragas is reported as skipped or failed when it was not successfully executed.
+Báo cáo này được tạo từ metrics baseline, kết quả kiểm tra chất lượng, freshness và thông tin truy vết nguồn raw đã lưu. Ragas được ghi rõ là bỏ qua hoặc thất bại nếu chưa chạy thành công; báo cáo không coi bước bị bỏ qua là đã đạt.
