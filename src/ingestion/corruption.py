@@ -1,77 +1,123 @@
 from __future__ import annotations
 
+from pathlib import Path
+from typing import Any
+
 import pandas as pd
 
+from core.utils import write_json
 
-import json
-import random
-import pandas as pd
-from datetime import timedelta
 
-def corrupt_clean_dataframe(df: pd.DataFrame, output_log_path) -> pd.DataFrame:
-    """Simulate nhiều dạng data corruption có chủ đích trên dữ liệu sạch."""
+def _target_indices(df: pd.DataFrame, count: int, offset: int) -> list[int]:
+    """Select deterministic, non-overlapping records by stable paper_id order."""
+    ordered = df.sort_values("paper_id").index.tolist()
+    if not ordered:
+        return []
+    start = min(offset, len(ordered) - 1)
+    return ordered[start : start + count]
+
+
+def _log_entry(kind: str, df: pd.DataFrame, indices: list[int], **parameters: Any) -> dict[str, Any]:
+    return {
+        "type": kind,
+        "count": len(indices),
+        "paper_ids": [str(value) for value in df.loc[indices, "paper_id"].tolist()],
+        "parameters": parameters,
+    }
+
+
+def corrupt_clean_dataframe(df: pd.DataFrame, output_log_path: str | Path) -> pd.DataFrame:
+    """Create deterministic, traceable corruption scenarios on clean data."""
     if df.empty:
-        return df
+        raise ValueError("Cannot corrupt an empty clean dataframe.")
 
-    corrupted_df = df.copy()
-    corruption_log = {}
-    
-    # 1. Drop một số latest records (xóa 5% bài báo mới nhất)
-    # Giả định có cột 'published_dt' hoặc lấy theo index nếu đã sort
-    drop_count = max(1, int(len(corrupted_df) * 0.05))
-    if 'published_dt' in corrupted_df.columns:
-        corrupted_df = corrupted_df.sort_values('published_dt', ascending=False)
-        dropped_indices = corrupted_df.index[:drop_count]
-        corrupted_df = corrupted_df.drop(dropped_indices)
-    else:
-        # Dự phòng nếu không có published_dt
-        corrupted_df = corrupted_df.iloc[drop_count:]
-    corruption_log['dropped_latest_records'] = drop_count
+    required = {
+        "paper_id",
+        "title",
+        "summary",
+        "published",
+        "authors_joined",
+        "categories_joined",
+        "age_days",
+    }
+    missing = sorted(required.difference(df.columns))
+    if missing:
+        raise ValueError(f"Corruption input is missing columns: {', '.join(missing)}")
 
-    # 2. Blank summary ở một số dòng (5% số dòng)
-    blank_idx = corrupted_df.sample(frac=0.05).index
-    corrupted_df.loc[blank_idx, 'summary'] = ""
-    corruption_log['blanked_summaries'] = len(blank_idx)
+    corrupted = df.copy(deep=True)
+    corrupted["published_dt"] = pd.to_datetime(corrupted["published"], errors="coerce")
+    affected_count = max(1, round(len(corrupted) * 0.05))
+    log_entries: list[dict[str, Any]] = []
 
-    # 3. Inject noise vào text (thêm ký tự lạ vào summary của 5% số dòng)
-    noise_idx = corrupted_df.sample(frac=0.05).index
-    corrupted_df.loc[noise_idx, 'summary'] = corrupted_df.loc[noise_idx, 'summary'].astype(str) + " [NOISE_INJECTED_XYZ_123]"
-    corruption_log['injected_noise_summaries'] = len(noise_idx)
+    # Drop the newest records while retaining their IDs in the log for lineage.
+    latest_indices = (
+        corrupted.sort_values("published_dt", ascending=False, na_position="last")
+        .head(affected_count)
+        .index.tolist()
+    )
+    log_entries.append(_log_entry("drop_latest_records", corrupted, latest_indices))
+    corrupted = corrupted.drop(index=latest_indices)
 
-    # 4. Làm title bị truncate (cắt cụt còn 10 ký tự ở 5% số dòng)
-    trunc_idx = corrupted_df.sample(frac=0.05).index
-    corrupted_df.loc[trunc_idx, 'title'] = corrupted_df.loc[trunc_idx, 'title'].astype(str).str[:10] + "..."
-    corruption_log['truncated_titles'] = len(trunc_idx)
+    # Stable paper_id ordering keeps every rerun reproducible. Separate offsets
+    # avoid accidentally applying every corruption to the same record.
+    blank_indices = _target_indices(corrupted, affected_count, 0)
+    log_entries.append(_log_entry("blank_summary", corrupted, blank_indices))
+    corrupted.loc[blank_indices, "summary"] = ""
 
-    # 5. Làm published date cũ đi (lùi 2 năm với 5% số dòng)
-    if 'published_dt' in corrupted_df.columns:
-        stale_idx = corrupted_df.sample(frac=0.05).index
-        corrupted_df.loc[stale_idx, 'published_dt'] = corrupted_df.loc[stale_idx, 'published_dt'] - pd.Timedelta(days=730)
-        # Nếu đang lưu dưới dạng string thì cập nhật lại string
-        if 'published' in corrupted_df.columns:
-            corrupted_df.loc[stale_idx, 'published'] = corrupted_df.loc[stale_idx, 'published_dt'].dt.strftime('%Y-%m-%d')
-        corruption_log['stale_published_dates'] = len(stale_idx)
-
-    # 6. Add duplicate rows (nhân bản 5% số dòng)
-    dup_rows = corrupted_df.sample(frac=0.05)
-    corrupted_df = pd.concat([corrupted_df, dup_rows], ignore_index=True)
-    corruption_log['added_duplicates'] = len(dup_rows)
-
-    # 7. Rebuild `text_for_embedding` (để phản ánh các thay đổi làm hỏng data)
-    corrupted_df['text_for_embedding'] = (
-        "Title: " + corrupted_df['title'].astype(str) + "\n" +
-        "Authors: " + corrupted_df.get('authors_joined', '').astype(str) + "\n" +
-        "Categories: " + corrupted_df.get('categories_joined', '').astype(str) + "\n" +
-        "Summary: " + corrupted_df['summary'].astype(str)
+    noise_indices = _target_indices(corrupted, affected_count, affected_count)
+    log_entries.append(
+        _log_entry(
+            "inject_summary_noise",
+            corrupted,
+            noise_indices,
+            suffix="[NOISE_INJECTED_XYZ_123]",
+        )
+    )
+    corrupted.loc[noise_indices, "summary"] = (
+        corrupted.loc[noise_indices, "summary"].astype(str)
+        + " [NOISE_INJECTED_XYZ_123]"
     )
 
-    # 8. Ghi corruption log vào output_log_path
-    try:
-        import os
-        os.makedirs(os.path.dirname(output_log_path), exist_ok=True)
-        with open(output_log_path, 'w', encoding='utf-8') as f:
-            json.dump(corruption_log, f, indent=4)
-    except Exception as e:
-        print(f"Lỗi khi ghi log: {e}")
+    title_indices = _target_indices(corrupted, affected_count, affected_count * 2)
+    log_entries.append(
+        _log_entry("truncate_title", corrupted, title_indices, retained_characters=10)
+    )
+    corrupted.loc[title_indices, "title"] = (
+        corrupted.loc[title_indices, "title"].astype(str).str[:10] + "..."
+    )
 
-    return corrupted_df
+    stale_indices = _target_indices(corrupted, affected_count, affected_count * 3)
+    log_entries.append(
+        _log_entry("stale_publication_date", corrupted, stale_indices, days_shifted=730)
+    )
+    shifted_dates = corrupted.loc[stale_indices, "published_dt"] - pd.Timedelta(days=730)
+    corrupted.loc[stale_indices, "published_dt"] = shifted_dates
+    corrupted.loc[stale_indices, "published"] = shifted_dates.dt.strftime("%Y-%m-%d")
+    corrupted.loc[stale_indices, "age_days"] = (
+        pd.to_numeric(corrupted.loc[stale_indices, "age_days"], errors="coerce").fillna(0)
+        + 730
+    ).astype(int)
+
+    duplicate_indices = _target_indices(corrupted, affected_count, affected_count * 4)
+    log_entries.append(_log_entry("add_duplicate_rows", corrupted, duplicate_indices))
+    duplicate_rows = corrupted.loc[duplicate_indices].copy()
+    corrupted = pd.concat([corrupted, duplicate_rows], ignore_index=True)
+
+    corrupted["text_for_embedding"] = (
+        "Title: " + corrupted["title"].fillna("").astype(str) + "\n"
+        "Authors: " + corrupted["authors_joined"].fillna("").astype(str) + "\n"
+        "Categories: " + corrupted["categories_joined"].fillna("").astype(str) + "\n"
+        "Summary: " + corrupted["summary"].fillna("").astype(str)
+    )
+    corrupted = corrupted.reset_index(drop=True)
+
+    write_json(
+        Path(output_log_path),
+        {
+            "strategy": "deterministic paper_id ordering",
+            "input_rows": int(len(df)),
+            "output_rows": int(len(corrupted)),
+            "corruptions": log_entries,
+        },
+    )
+    return corrupted

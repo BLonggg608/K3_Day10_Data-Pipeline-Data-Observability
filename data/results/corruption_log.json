@@ -1,0 +1,61 @@
+{
+  "strategy": "deterministic paper_id ordering",
+  "input_rows": 24,
+  "output_rows": 24,
+  "corruptions": [
+    {
+      "type": "drop_latest_records",
+      "count": 1,
+      "paper_ids": [
+        "10.2118/234689-pa"
+      ],
+      "parameters": {}
+    },
+    {
+      "type": "blank_summary",
+      "count": 1,
+      "paper_ids": [
+        "10.1007/s10278-026-02086-9"
+      ],
+      "parameters": {}
+    },
+    {
+      "type": "inject_summary_noise",
+      "count": 1,
+      "paper_ids": [
+        "10.1093/sleep/zsag091.0346"
+      ],
+      "parameters": {
+        "suffix": "[NOISE_INJECTED_XYZ_123]"
+      }
+    },
+    {
+      "type": "truncate_title",
+      "count": 1,
+      "paper_ids": [
+        "10.1111/exsy.70341"
+      ],
+      "parameters": {
+        "retained_characters": 10
+      }
+    },
+    {
+      "type": "stale_publication_date",
+      "count": 1,
+      "paper_ids": [
+        "10.20944/preprints202602.0996.v1"
+      ],
+      "parameters": {
+        "days_shifted": 730
+      }
+    },
+    {
+      "type": "add_duplicate_rows",
+      "count": 1,
+      "paper_ids": [
+        "10.20944/preprints202604.0339.v1"
+      ],
+      "parameters": {}
+    }
+  ]
+}
